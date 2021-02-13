@@ -1,9 +1,10 @@
+from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin, BaseUserManager
 from django.dispatch import receiver
 from django.db.models.signals import post_save
 from mptt.models import MPTTModel, TreeForeignKey
 from django.contrib.auth.models import User
 from django.db import models
-from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin, BaseUserManager
+from django.contrib.auth import get_user_model
 
 
 class UserAccountManager(BaseUserManager):
@@ -18,12 +19,32 @@ class UserAccountManager(BaseUserManager):
         user.save()
         return user
 
+    def create_superuser(self, email, name, password=None, **extra_fields):
+        extra_fields.setdefault('is_staff', True)
+        extra_fields.setdefault('is_superuser', True)
+
+        if extra_fields.get('is_staff') is not True:
+            raise ValueError('Superuser must have is_staff=True.')
+        if extra_fields.get('is_superuser') is not True:
+            raise ValueError('Superuser must have is_superuser=True.')
+
+        email = self.normalize_email(email)
+        user = self.model(email=email, name=name)
+
+        user.set_password(password)
+        user.save()
+        return user
+
+        # return self._create_user(email, name, password, **extra_fields)
+
 
 class UserAccount(AbstractBaseUser, PermissionsMixin):
     email = models.EmailField(max_length=255, unique=True)
     name = models.CharField(max_length=255)
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
+    # THIS MUST BE CHANGED  FOR PROD to FALSE
+    is_superuser = models.BooleanField(default=False)
 
     objects = UserAccountManager()
 
@@ -40,9 +61,25 @@ class UserAccount(AbstractBaseUser, PermissionsMixin):
         return self.email
 
 
-# Create your models here.
+UserModel = get_user_model()
 
-# Create your models here.
+
+class UserFollowing(models.Model):
+    user_id = models.ForeignKey(
+        UserModel, related_name="following", on_delete=models.CASCADE)
+    following_user_id = models.ForeignKey(
+        UserModel, related_name="followers", on_delete=models.CASCADE)
+    created = models.DateTimeField(auto_now_add=True, db_index=True)
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields=['user_id', 'following_user_id'],  name="unique_followers")
+        ]
+        ordering = ["-created"]
+
+    # def __str__(self):
+    #     f"{self.user_id} follows {self.following_user_id}"
 
 
 class Score(models.Model):
@@ -51,33 +88,19 @@ class Score(models.Model):
     score_type = models.CharField(max_length=32, blank=False, null=False)
 
 
-class Profile(models.Model):
-    user = models.OneToOneField(User, null=True, on_delete=models.CASCADE)
-    communities = models.ManyToManyField(
-        'Community', blank=True, related_name="communities")
-    score = models.OneToOneField(Score, on_delete=models.CASCADE)
-# @receiver(post_save, sender=User)
-# def create_user_profile(sender, instance, created, **kwargs):
-#     if created:
-#         Profile.objects.create(user=instance)
-#         team = Team.objects.create(name=instance.username + "'s team")
-#         instance.profile.teams.add(team)
-#         instance.save()
-
-
 # @receiver(post_save, sender=User)
 # def save_user_profile(sender, instance, **kwargs):
 #     instance.profile.save()
 
-class Community(MPTTModel):
-    title = models.CharField(max_length=128, blank=False, null=False)
-    description = models.CharField(max_length=2048, blank=False, null=False)
-    author = models.ForeignKey(
-        Profile, on_delete=models.CASCADE, related_name="profile")
-    score = models.ForeignKey(
-        Score, on_delete=models.CASCADE, related_name="community_score")
-    parent_communities = TreeForeignKey('self', on_delete=models.CASCADE,
-                                        null=True, blank=True, related_name='child_communities')
+# class Community(MPTTModel):
+#     title = models.CharField(max_length=128, blank=False, null=False)
+#     description = models.CharField(max_length=2048, blank=False, null=False)
+#     author = models.ForeignKey(
+#         Profile, on_delete=models.CASCADE, related_name="profile")
+#     score = models.ForeignKey(
+#         Score, on_delete=models.CASCADE, related_name="community_score")
+#     parent_communities = TreeForeignKey('self', on_delete=models.CASCADE,
+#                                         null=True, blank=True, related_name='child_communities')
 
 
 class Post(models.Model):
@@ -86,9 +109,9 @@ class Post(models.Model):
     link = models.CharField(max_length=256, blank=True, null=True)
     post_type = models.CharField(max_length=32, blank=False, null=False)
     author = models.ForeignKey(
-        Profile, on_delete=models.CASCADE)  # models.SET_NULL
-    communities = models.ManyToManyField(
-        'Community', related_name="post_communities")
+        UserModel, on_delete=models.CASCADE)  # models.SET_NULL
+    # communities = models.ManyToManyField(
+    #     'Community', related_name="post_communities")
     created = models.DateTimeField(auto_now=True)
     # image field here
     score = models.ForeignKey(
@@ -98,7 +121,7 @@ class Post(models.Model):
 class Comment(models.Model):
     content = models.CharField(max_length=256, blank=False, null=False)
     author = models.ForeignKey(
-        Profile, on_delete=models.CASCADE)  # models.SET_NULL
+        UserModel, on_delete=models.CASCADE)  # models.SET_NULL
     post = models.ForeignKey(
         Post, on_delete=models.CASCADE, related_name='comments')
     score = models.ForeignKey(

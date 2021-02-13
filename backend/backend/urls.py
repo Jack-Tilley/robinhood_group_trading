@@ -9,6 +9,9 @@ from rest_framework import routers
 
 router = routers.DefaultRouter()
 router.register(r'comments', views.CommentsView, 'comments')
+router.register(r'userfollowing', views.UserFollowingViewSet, 'userfollowing')
+router.register(r'userfollower', views.UserFollowerViewSet, 'userfollower')
+router.register(r'users', views.UserView, 'users')
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/', include(router.urls)),
@@ -16,5 +19,5 @@ urlpatterns = [
     path('auth/', include('djoser.urls.jwt')),
 ]
 
-urlpatterns += [re_path(r'^.*',
-                        TemplateView.as_view(template_name="index.html"))]
+# urlpatterns += [re_path(r'^.*',
+#                         TemplateView.as_view(template_name="index.html"))]

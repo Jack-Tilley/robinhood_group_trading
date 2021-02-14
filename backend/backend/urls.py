@@ -17,6 +17,7 @@ urlpatterns = [
     path('api/', include(router.urls)),
     path('auth/', include('djoser.urls')),
     path('auth/', include('djoser.urls.jwt')),
+    path('api/auth/myuser/', views.UserAPI.as_view())
 ]
 
 urlpatterns += [re_path(r'^.*',

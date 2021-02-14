@@ -8,7 +8,7 @@ from .models import Comment, UserFollowing
 from rest_framework import generics, permissions
 from rest_framework.response import Response
 from django.contrib.auth.models import User
-from rest_framework.permissions import IsAuthenticatedOrReadOnly
+from rest_framework.permissions import IsAuthenticatedOrReadOnly, IsAuthenticated
 from django.contrib.auth import get_user_model
 # Create your views here.
 UserModel = get_user_model()
@@ -20,13 +20,15 @@ class UserView(viewsets.ModelViewSet):
 
 
 class UserFollowingViewSet(viewsets.ModelViewSet):
-    # permission_classes = (IsAuthenticatedOrReadOnly,)
+    permission_classes = (IsAuthenticatedOrReadOnly,)
+    # permission_classes = (IsAuthenticated,)
     serializer_class = FollowingSerializer
     queryset = UserFollowing.objects.all()
 
 
 class UserFollowerViewSet(viewsets.ModelViewSet):
-    # permission_classes = (IsAuthenticatedOrReadOnly,)
+    permission_classes = (IsAuthenticatedOrReadOnly,)
+    # permission_classes = (IsAuthenticated,)
     serializer_class = FollowersSerializer
     queryset = UserFollowing.objects.all()
 
@@ -34,3 +36,11 @@ class UserFollowerViewSet(viewsets.ModelViewSet):
 class CommentsView(viewsets.ModelViewSet):
     serializer_class = CommentSerializer
     queryset = Comment.objects.all()
+
+
+class UserAPI(generics.RetrieveAPIView):
+    permission_classes = [permissions.IsAuthenticated]
+    serializer_class = UserSerializer
+
+    def get_object(self):
+        return self.request.user

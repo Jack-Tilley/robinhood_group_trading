@@ -39,6 +39,12 @@ class CommentsView(viewsets.ModelViewSet):
 
 
 class UserAPI(generics.RetrieveAPIView):
+    # this is a test for how to gain access with a token
+    # first get token
+    # then send bodyless get with header:
+    # content type :app/json
+    # Authorization: JWT {TOKEN HERE}
+    #ACCEPT: Application/json
     permission_classes = [permissions.IsAuthenticated]
     serializer_class = UserSerializer
 

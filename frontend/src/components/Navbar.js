@@ -28,7 +28,7 @@ const Navbar = ({ logout, isAuthenticated }) => {
 
   const authLinks = () => (
     <li className="nav-item">
-      <a className="nav-link" href="#!" onClick={logout_user}>
+      <a className="nav-link" href="/" onClick={logout_user}>
         Logout
       </a>
     </li>
@@ -38,7 +38,7 @@ const Navbar = ({ logout, isAuthenticated }) => {
     <Fragment>
       <nav className="navbar navbar-expand-lg navbar-light bg-light">
         <Link className="navbar-brand" to="/">
-          Auth System
+          Group Trading SM
         </Link>
         <button
           className="navbar-toggler"

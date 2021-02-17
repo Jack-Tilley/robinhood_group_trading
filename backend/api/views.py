@@ -3,8 +3,8 @@ from django.shortcuts import render
 # Create your views here.
 from django.shortcuts import render
 from rest_framework import viewsets
-from .serializers import CommentSerializer, FollowingSerializer, FollowersSerializer, UserSerializer
-from .models import Comment, UserFollowing
+from .serializers import CommentSerializer, FollowingSerializer, FollowersSerializer, UserSerializer, ScoreSerializer, PostSerializer
+from .models import Comment, UserFollowing, Score, Post
 from rest_framework import generics, permissions
 from rest_framework.response import Response
 from django.contrib.auth.models import User
@@ -33,11 +33,6 @@ class UserFollowerViewSet(viewsets.ModelViewSet):
     queryset = UserFollowing.objects.all()
 
 
-class CommentsView(viewsets.ModelViewSet):
-    serializer_class = CommentSerializer
-    queryset = Comment.objects.all()
-
-
 class UserAPI(generics.RetrieveAPIView):
     # this is a test for how to gain access with a token
     # first get token
@@ -50,3 +45,18 @@ class UserAPI(generics.RetrieveAPIView):
 
     def get_object(self):
         return self.request.user
+
+
+class ScoresView(viewsets.ModelViewSet):
+    serializer_class = ScoreSerializer
+    queryset = Score.objects.all()
+
+
+class CommentsView(viewsets.ModelViewSet):
+    serializer_class = CommentSerializer
+    queryset = Comment.objects.all()
+
+
+class PostsView(viewsets.ModelViewSet):
+    serializer_class = PostSerializer
+    queryset = Post.objects.all()

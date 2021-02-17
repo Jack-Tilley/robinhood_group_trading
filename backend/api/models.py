@@ -83,24 +83,9 @@ class UserFollowing(models.Model):
 
 
 class Score(models.Model):
-    upvotes = models.IntegerField(default=0)
-    downvotes = models.IntegerField(default=0)
+    likes = models.IntegerField(default=0)
+    hearts = models.IntegerField(default=0)
     score_type = models.CharField(max_length=32, blank=False, null=False)
-
-
-# @receiver(post_save, sender=User)
-# def save_user_profile(sender, instance, **kwargs):
-#     instance.profile.save()
-
-# class Community(MPTTModel):
-#     title = models.CharField(max_length=128, blank=False, null=False)
-#     description = models.CharField(max_length=2048, blank=False, null=False)
-#     author = models.ForeignKey(
-#         Profile, on_delete=models.CASCADE, related_name="profile")
-#     score = models.ForeignKey(
-#         Score, on_delete=models.CASCADE, related_name="community_score")
-#     parent_communities = TreeForeignKey('self', on_delete=models.CASCADE,
-#                                         null=True, blank=True, related_name='child_communities')
 
 
 class Post(models.Model):
@@ -121,9 +106,22 @@ class Post(models.Model):
 class Comment(models.Model):
     content = models.CharField(max_length=256, blank=False, null=False)
     author = models.ForeignKey(
-        UserModel, on_delete=models.CASCADE)  # models.SET_NULL
+        UserModel, on_delete=models.CASCADE, related_name="commentor")  # models.SET_NULL
     post = models.ForeignKey(
         Post, on_delete=models.CASCADE, related_name='comments')
     score = models.ForeignKey(
         Score, on_delete=models.CASCADE, related_name="comment_score")
     created = models.DateTimeField(auto_now=True)
+
+# class Portfolio(models.Model):
+#     pass
+
+# class Community(MPTTModel):
+#     title = models.CharField(max_length=128, blank=False, null=False)
+#     description = models.CharField(max_length=2048, blank=False, null=False)
+#     author = models.ForeignKey(
+#         Profile, on_delete=models.CASCADE, related_name="profile")
+#     score = models.ForeignKey(
+#         Score, on_delete=models.CASCADE, related_name="community_score")
+#     parent_communities = TreeForeignKey('self', on_delete=models.CASCADE,
+#                                         null=True, blank=True, related_name='child_communities')

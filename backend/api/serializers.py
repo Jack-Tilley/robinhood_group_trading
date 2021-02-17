@@ -1,6 +1,6 @@
 from django.contrib.auth.models import User, Group
 from rest_framework import serializers
-from .models import Comment, UserFollowing
+from .models import Comment, UserFollowing, Post, Score
 from djoser.serializers import UserCreateSerializer
 from django.contrib.auth import get_user_model
 User = get_user_model()
@@ -46,8 +46,43 @@ class UserSerializer(serializers.ModelSerializer):
         return len(FollowersSerializer(obj.followers.all(), many=True).data)
 
 
+class ScoreSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Comment
+        fields = ('id', 'likes', 'hearts', 'score_type')
+
+
 class CommentSerializer(serializers.ModelSerializer):
+    score = serializers.SerializerMethodField()
 
     class Meta:
         model = Comment
-        fields = ('id', 'content', 'created')
+        fields = ('id', 'content', 'author', 'post', 'score', 'created')
+
+    def get_score(self, obj):
+        return ScoreSerializer(obj.score.all(), many=True).data
+
+
+class PostSerializer(serializers.ModelSerializer):
+    # comments = serializers.SerializerMethodField()
+    score = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Post
+        fields = (
+            "id",
+            "title",
+            "description",
+            "link",
+            "author",
+            # "post_type",
+            "created",
+            "comments",
+            "score",
+        )
+
+    # def get_comments(self, obj):
+    #     return CommentSerializer(obj.comments.all(), many=True).data
+
+    def get_score(self, obj):
+        return ScoreSerializer(obj.score.all(), many=True).data

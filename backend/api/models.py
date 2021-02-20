@@ -100,7 +100,7 @@ class Post(models.Model):
     created = models.DateTimeField(auto_now=True)
     # image field here
     score = models.ForeignKey(
-        Score, on_delete=models.CASCADE, related_name="score")
+        Score, on_delete=models.CASCADE, related_name="post", blank=True, null=True)
 
 
 class Comment(models.Model):
@@ -110,7 +110,7 @@ class Comment(models.Model):
     post = models.ForeignKey(
         Post, on_delete=models.CASCADE, related_name='comments')
     score = models.ForeignKey(
-        Score, on_delete=models.CASCADE, related_name="comment_score")
+        Score, on_delete=models.CASCADE, related_name="comments", blank=True, null=True)
     created = models.DateTimeField(auto_now=True)
 
 # class Portfolio(models.Model):

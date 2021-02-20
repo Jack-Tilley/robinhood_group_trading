@@ -48,24 +48,24 @@ class UserSerializer(serializers.ModelSerializer):
 
 class ScoreSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Comment
+        model = Score
         fields = ('id', 'likes', 'hearts', 'score_type')
 
 
 class CommentSerializer(serializers.ModelSerializer):
-    score = serializers.SerializerMethodField()
+    # score = serializers.SerializerMethodField()
 
     class Meta:
         model = Comment
         fields = ('id', 'content', 'author', 'post', 'score', 'created')
 
-    def get_score(self, obj):
-        return ScoreSerializer(obj.score.all(), many=True).data
+    # def get_score(self, obj):
+    #     return ScoreSerializer(obj.score.all(), many=True).data
 
 
 class PostSerializer(serializers.ModelSerializer):
     # comments = serializers.SerializerMethodField()
-    score = serializers.SerializerMethodField()
+    # score = serializers.SerializerMethodField()
 
     class Meta:
         model = Post
@@ -75,14 +75,14 @@ class PostSerializer(serializers.ModelSerializer):
             "description",
             "link",
             "author",
+            "score",
             # "post_type",
             "created",
             "comments",
-            "score",
         )
 
     # def get_comments(self, obj):
     #     return CommentSerializer(obj.comments.all(), many=True).data
 
-    def get_score(self, obj):
-        return ScoreSerializer(obj.score.all(), many=True).data
+    # def get_score(self, obj):
+    #     return ScoreSerializer(obj.score.all(), many=True).data

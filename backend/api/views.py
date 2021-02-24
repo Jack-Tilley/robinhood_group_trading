@@ -3,8 +3,8 @@ from django.shortcuts import render
 # Create your views here.
 from django.shortcuts import render
 from rest_framework import viewsets
-from .serializers import CommentSerializer, FollowingSerializer, FollowersSerializer, UserSerializer, ScoreSerializer, PostSerializer
-from .models import Comment, UserFollowing, Score, Post
+from .serializers import CommentSerializer, FollowingSerializer, FollowersSerializer, UserSerializer, ScoreSerializer, PostSerializer, PortfolioSerializer, InvestmentSerializer
+from .models import Comment, UserFollowing, Score, Post, Portfolio, Investment
 from rest_framework import generics, permissions
 from rest_framework.response import Response
 from django.contrib.auth.models import User
@@ -60,3 +60,13 @@ class CommentsView(viewsets.ModelViewSet):
 class PostsView(viewsets.ModelViewSet):
     serializer_class = PostSerializer
     queryset = Post.objects.all()
+
+
+class PortfoliosView(viewsets.ModelViewSet):
+    serializer_class = PortfolioSerializer
+    queryset = Portfolio.objects.all()
+
+
+class InvestmentsView(viewsets.ModelViewSet):
+    serializer_class = InvestmentSerializer
+    queryset = Investment.objects.all()

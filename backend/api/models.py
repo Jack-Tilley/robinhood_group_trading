@@ -99,6 +99,7 @@ class Post(models.Model):
     #     'Community', related_name="post_communities")
     created = models.DateTimeField(auto_now=True)
     # image field here
+    # score should be updated to OneToOne
     score = models.ForeignKey(
         Score, on_delete=models.CASCADE, related_name="post", blank=True, null=True)
 
@@ -109,12 +110,28 @@ class Comment(models.Model):
         UserModel, on_delete=models.CASCADE, related_name="commentor")  # models.SET_NULL
     post = models.ForeignKey(
         Post, on_delete=models.CASCADE, related_name='comments')
+    # score should be updated to OneToOne
     score = models.ForeignKey(
         Score, on_delete=models.CASCADE, related_name="comments", blank=True, null=True)
     created = models.DateTimeField(auto_now=True)
 
-# class Portfolio(models.Model):
-#     pass
+
+class Portfolio(models.Model):
+    name = models.CharField(max_length=256, blank=False, null=False)
+    user_id = models.OneToOneField(
+        UserModel, on_delete=models.CASCADE, related_name='user_id')
+
+
+class Investment(models.Model):
+    name = models.CharField(max_length=256, blank=False, null=False)
+    ticker = models.CharField(max_length=16, blank=False, null=False)
+    full_name = models.CharField(max_length=256, blank=False, null=False)
+    avg_buy_price = models.DecimalField(max_digits=10, decimal_places=4)
+    avg_sell_price = models.DecimalField(max_digits=10, decimal_places=4)
+    date_of_purchase = models.DateTimeField(blank=True, null=True)
+    date_of_sale = models.DateTimeField(blank=True, null=True)
+    portfolio_id = models.ForeignKey(Portfolio, on_delete=models.CASCADE)
+
 
 # class Community(MPTTModel):
 #     title = models.CharField(max_length=128, blank=False, null=False)

@@ -21,6 +21,7 @@ import store from "./store";
 
 import Layout from "./hocs/Layout";
 import Appbar from "./components/Appbar";
+import Feed from "./components/Feed";
 
 const theme = createMuiTheme({
   palette: {
@@ -51,6 +52,7 @@ const App = () => (
             component={ResetPasswordConfirm}
           />
           <Route exact path="/activate/:uid/:token" component={Activate} />
+          <Route exact path="/feed" component={Feed} />
         </Switch>
       </Router>
     </Provider>

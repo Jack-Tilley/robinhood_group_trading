@@ -1,6 +1,6 @@
 from django.contrib.auth.models import User, Group
 from rest_framework import serializers
-from .models import Comment, UserFollowing, Post, Score
+from .models import Comment, UserFollowing, Post, Score, Investment, Portfolio
 from djoser.serializers import UserCreateSerializer
 from django.contrib.auth import get_user_model
 User = get_user_model()
@@ -86,3 +86,29 @@ class PostSerializer(serializers.ModelSerializer):
 
     # def get_score(self, obj):
     #     return ScoreSerializer(obj.score.all(), many=True).data
+
+
+class InvestmentSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Investment
+        fields = (
+            "id",
+            "name",
+            "ticker",
+            "full_name",
+            "avg_buy_price",
+            "avg_sell_price",
+            "date_of_purchase",
+            "date_of_sale",
+            "portfolio_id",
+        )
+
+
+class PortfolioSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Portfolio
+        fields = (
+            "id",
+            "name",
+            "user_id",
+        )

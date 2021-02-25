@@ -105,10 +105,14 @@ class InvestmentSerializer(serializers.ModelSerializer):
 
 
 class PortfolioSerializer(serializers.ModelSerializer):
+    investments = InvestmentSerializer(source='investment_set', many=True)
+    # investments = serializers.SerializerMethodField()
+
     class Meta:
         model = Portfolio
         fields = (
             "id",
             "name",
             "user_id",
+            'investments'
         )

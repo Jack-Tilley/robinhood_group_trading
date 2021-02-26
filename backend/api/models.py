@@ -116,6 +116,16 @@ class Comment(models.Model):
     created = models.DateTimeField(auto_now=True)
 
 
+class Instrument(models.Model):
+    instrument_id = models.CharField(
+        primary_key=True, max_length=36, blank=False, null=False)
+    name = models.CharField(max_length=256, blank=False, null=False)
+    symbol = models.CharField(max_length=8, blank=False, null=False)
+    tradeable = models.BooleanField()
+    list_date = models.DateTimeField(blank=True, null=True)
+    market = models.CharField(max_length=256, blank=True, null=True)
+
+
 class Portfolio(models.Model):
     name = models.CharField(max_length=256, blank=False, null=False)
     user_id = models.OneToOneField(
@@ -123,14 +133,17 @@ class Portfolio(models.Model):
 
 
 class Investment(models.Model):
-    name = models.CharField(max_length=256, blank=False, null=False)
-    ticker = models.CharField(max_length=16, blank=False, null=False)
-    full_name = models.CharField(max_length=256, blank=False, null=False)
-    avg_buy_price = models.DecimalField(max_digits=10, decimal_places=4)
-    avg_sell_price = models.DecimalField(max_digits=10, decimal_places=4)
-    date_of_purchase = models.DateTimeField(blank=True, null=True)
-    date_of_sale = models.DateTimeField(blank=True, null=True)
-    portfolio_id = models.ForeignKey(Portfolio, on_delete=models.CASCADE)
+    average_price = models.DecimalField(max_digits=14, decimal_places=4)
+    state = models.CharField(max_length=32, blank=True, null=True)
+    side = models.CharField(max_length=32, blank=True, null=True)
+    quantity = models.DecimalField(max_digits=14, decimal_places=4)
+    transaction_total = models.DecimalField(max_digits=14, decimal_places=4)
+    created_at = models.DateTimeField(blank=True, null=True)
+    finalized_at = models.DateTimeField(blank=True, null=True)
+    instrument_id = models.ForeignKey(
+        Instrument, on_delete=models.CASCADE, related_name='instrument')
+    portfolio_id = models.ForeignKey(
+        Portfolio, on_delete=models.CASCADE, related_name='portfolio')
 
 
 # class Community(MPTTModel):

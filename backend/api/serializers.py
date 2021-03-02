@@ -1,6 +1,6 @@
 from django.contrib.auth.models import User, Group
 from rest_framework import serializers
-from .models import Comment, UserFollowing, Post, Score, Investment, Portfolio
+from .models import Comment, UserFollowing, Post, Score, Investment, Portfolio, Instrument
 from djoser.serializers import UserCreateSerializer
 from django.contrib.auth import get_user_model
 User = get_user_model()
@@ -114,4 +114,18 @@ class PortfolioSerializer(serializers.ModelSerializer):
             "name",
             "user_id",
             'investments'
+        )
+
+
+class InstrumentSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Instrument
+        fields = (
+            "id",
+            "instrument_id",
+            "name",
+            "market",
+            'tradeable',
+            "list_date",
+            "symbol",
         )

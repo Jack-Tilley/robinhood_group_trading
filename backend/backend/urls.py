@@ -15,8 +15,9 @@ router.register(r'scores', views.ScoresView, 'scores')
 router.register(r'comments', views.CommentsView, 'comments')
 router.register(r'posts', views.PostsView, 'posts')
 router.register(r'users', views.UserView, 'users')
-router.register(r'porfolios', views.PortfoliosView, 'porfolios')
+router.register(r'portfolios', views.PortfoliosView, 'portfolios')
 router.register(r'investments', views.InvestmentsView, 'investments')
+router.register(r'instruments', views.InstrumentsView, 'instruments')
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/', include(router.urls)),

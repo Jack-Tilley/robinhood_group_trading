@@ -128,8 +128,8 @@ class Instrument(models.Model):
 
 class Portfolio(models.Model):
     name = models.CharField(max_length=256, blank=False, null=False)
-    user_id = models.OneToOneField(
-        UserModel, on_delete=models.CASCADE, related_name='user_id')
+    user = models.OneToOneField(
+        UserModel, on_delete=models.CASCADE)
 
 
 class Investment(models.Model):
@@ -140,11 +140,15 @@ class Investment(models.Model):
     transaction_total = models.DecimalField(max_digits=14, decimal_places=4)
     created_at = models.DateTimeField(blank=True, null=True)
     finalized_at = models.DateTimeField(blank=True, null=True)
-    instrument_id = models.ForeignKey(
-        Instrument, on_delete=models.CASCADE, related_name='instrument')
-    portfolio_id = models.ForeignKey(
-        Portfolio, on_delete=models.CASCADE, related_name='portfolio')
+    instrument = models.ForeignKey(
+        Instrument, on_delete=models.CASCADE, related_name='investments')
+    portfolio = models.ForeignKey(
+        Portfolio, on_delete=models.CASCADE, related_name='investments')
+    # check = models.CharField(max_length=32, blank=True, null=True)
 
+
+class Check(models.Model):
+    check = models.CharField(max_length=32, blank=True, null=True)
 
 # class Community(MPTTModel):
 #     title = models.CharField(max_length=128, blank=False, null=False)

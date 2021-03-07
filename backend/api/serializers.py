@@ -91,41 +91,21 @@ class PostSerializer(serializers.ModelSerializer):
 class InvestmentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Investment
-        fields = (
-            "id",
-            "name",
-            "ticker",
-            "full_name",
-            "avg_buy_price",
-            "avg_sell_price",
-            "date_of_purchase",
-            "date_of_sale",
-            "portfolio_id",
-        )
+        fields = '__all__'
 
 
 class PortfolioSerializer(serializers.ModelSerializer):
-    investments = InvestmentSerializer(source='investment_set', many=True)
-
     class Meta:
         model = Portfolio
         fields = (
             "id",
             "name",
             "user_id",
-            'investments'
+            'investments',
         )
 
 
 class InstrumentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Instrument
-        fields = (
-            "id",
-            "instrument_id",
-            "name",
-            "market",
-            'tradeable',
-            "list_date",
-            "symbol",
-        )
+        fields = '__all__'
